@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 18th Birthday Prachi! 🎉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Countdown Screen */
+        #countdown-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        #countdown-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .countdown-content {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .countdown-title {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            50% { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8); }
+        }
+
+        .countdown-timer {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 80px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .time-value {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: bold;
+        }
+
+        .time-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-star, .floating-candle {
+            position: absolute;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Main Content */
+        #main-content {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #main-content.active {
+            display: block;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .hero-title {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(2rem, 8vw, 4rem);
+            color: #fff;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .messages-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        .message-card:nth-child(2) { animation-delay: 0.2s; }
+        .message-card:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .message-card p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Photo Gallery */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .photo-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+        }
+
+        /* Interactive Elements */
+        .interactive-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .section-title {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            text-align: center;
+            margin-bottom: 30px;
+            color: #764ba2;
+        }
+
+        .balloons-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .balloon {
+            width: 80px;
+            height: 100px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: floatBalloon 3s ease-in-out infinite;
+        }
+
+        .balloon:nth-child(1) { background: #ff6b6b; animation-delay: 0s; }
+        .balloon:nth-child(2) { background: #4ecdc4; animation-delay: 0.5s; }
+        .balloon:nth-child(3) { background: #ffe66d; animation-delay: 1s; }
+        .balloon:nth-child(4) { background: #a8e6cf; animation-delay: 1.5s; }
+        .balloon:nth-child(5) { background: #ff8dc7; animation-delay: 2s; }
+
+        @keyframes floatBalloon {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .balloon:hover {
+            transform: scale(1.1);
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 20px;
+            background: #333;
+        }
+
+        /* Cake Section */
+        .cake-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cake {
+            display: inline-block;
+            position: relative;
+            padding: 40px;
+        }
+
+        .cake-layer {
+            width: 420px;
+            height: 80px;
+            background: linear-gradient(to bottom, #ff69b4 0%, #ff1493 100%);
+            border-radius: 15px;
+            margin: 8px auto;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .cake-layer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: #fff;
+            border-radius: 15px 15px 0 0;
+            opacity: 0.3;
+        }
+
+        .cake-layer::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 10%;
+            right: 10%;
+            height: 8px;
+            background: repeating-linear-gradient(
+                90deg,
+                #fff 0px,
+                #fff 15px,
+                transparent 15px,
+                transparent 30px
+            );
+            opacity: 0.6;
+        }
+
+        .candles {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .candle {
+            width: 12px;
+            height: 50px;
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: #2c3e50;
+            border-radius: 2px;
+        }
+
+        .candle:hover {
+            transform: translateY(-5px);
+        }
+
+        .flame {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 25px;
+            background: radial-gradient(circle at 50% 100%, #ffeb3b 0%, #ff9800 30%, #f44336 60%, transparent 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            filter: blur(1px);
+        }
+
+        .flame::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 15px;
+            background: radial-gradient(circle at 50% 100%, #ffeb3b 0%, #ffd54f 50%, transparent 100%);
+            border-radius: 50%;
+        }
+
+        .candle.lit .flame {
+            opacity: 1;
+            animation: flicker 0.3s ease-in-out infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* Button Styles */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 20px 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Message Wall */
+        .message-wall {
+            margin: 30px 0;
+        }
+
+        .message-input, .message-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #764ba2;
+            border-radius: 15px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .message-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .send-status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .send-status.success {
+            background: linear-gradient(135deg, #a8e6cf 0%, #3eecac 100%);
+            color: #155724;
+            display: block;
+        }
+
+        .send-status.error {
+            background: linear-gradient(135deg, #ffcccc 0%, #ff9999 100%);
+            color: #721c24;
+            display: block;
+        }
+
+        /* Popup Message */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        .popup-box {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.4s ease-out;
+        }
+
+        .popup-box h3 {
+            font-family: 'Pacifico', cursive;
+            color: #764ba2;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .popup-box p {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .popup-close {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .popup-close:hover {
+            transform: scale(1.05);
+        }
+        .easter-egg {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 3rem;
+            cursor: pointer;
+            animation: pulse 2s ease-in-out infinite;
+            z-index: 100;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .secret-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1001;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .secret-message.active {
+            display: block;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            animation: confettiFall 3s linear forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            font-size: 1.1rem;
+            margin-top: 60px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .messages-section, .interactive-section {
+                padding: 20px;
+            }
+
+            .balloon {
+                width: 60px;
+                height: 80px;
+            }
+
+            .cake-layer {
+                width: 420px;
+                height: 70px;
+            }
+
+            .candle {
+                width: 10px;
+                height: 40px;
+            }
+
+            .flame {
+                width: 15px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Countdown Screen -->
+    <div id="countdown-screen">
+        <div class="floating-elements">
+            <div class="floating-star" style="left: 10%; top: 20%; font-size: 2rem;">⭐</div>
+            <div class="floating-star" style="left: 80%; top: 30%; font-size: 1.5rem;">✨</div>
+            <div class="floating-candle" style="left: 20%; top: 60%; font-size: 2rem;">🕯️</div>
+            <div class="floating-candle" style="left: 70%; top: 70%; font-size: 1.8rem;">🕯️</div>
+            <div class="floating-star" style="left: 50%; top: 80%; font-size: 2rem;">💫</div>
+        </div>
+        
+        <div class="countdown-content">
+            <h1 class="countdown-title">🎁 The Big Surprise Unlocks at Midnight!</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">Come back when the clock strikes 12! ⏰</p>
+            
+            <div class="countdown-timer">
+                <div class="time-box">
+                    <div class="time-value" id="days">00</div>
+                    <div class="time-label">Days</div>
+                </div>
+                <div class="time-box">
+                    <div class="time-value" id="hours">00</div>
+                    <div class="time-label">Hours</div>
+                </div>
+                <div class="time-box">
+                    <div class="time-value" id="minutes">00</div>
+                    <div class="time-label">Minutes</div>
+                </div>
+                <div class="time-box">
+                    <div class="time-value" id="seconds">00</div>
+                    <div class="time-label">Seconds</div>
+                </div>
+            </div>
+            
+            <p style="font-size: 1rem; opacity: 0.8; margin-top: 20px;">🎈 Balloons are floating... candles are glowing... magic is brewing! 🎂</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <div class="hero-section">
+            <h1 class="hero-title">🎉 Happy 18th Birthday, Prachi! 🎂</h1>
+            <p style="color: white; font-size: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">You're officially an adult now! 🎊</p>
+        </div>
+
+        <div class="messages-section">
+            <div class="message-card">
+                <p>💖 From 1 to 18, you've only gotten more awesome every year! You've grown into such an amazing person, and I'm so lucky to witness it all.</p>
+            </div>
+            <div class="message-card">
+                <p>✨ Wishing you laughter, dreams, and memories brighter than candles on your cake! May this year bring you everything your heart desires.</p>
+            </div>
+            <div class="message-card">
+                <p>😜 You're now officially an adult - but still my forever partner-in-chaos! Here's to more adventures, more laughs, and more unforgettable moments together!</p>
+            </div>
+        </div>
+
+        <!-- Photo Gallery -->
+        <div class="messages-section">
+            <h2 class="section-title">📸 Memory Lane</h2>
+            <div class="photo-gallery">
+                <div class="photo-card">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="photo-card">
+                    <div class="photo-placeholder">💝</div>
+                </div>
+                <div class="photo-card">
+                    <div class="photo-placeholder">🌟</div>
+                </div>
+                <div class="photo-card">
+                    <div class="photo-placeholder">🎨</div>
+                </div>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 20px;">Replace these with your favorite photos of Prachi! 💕</p>
+        </div>
+
+
+
+        <!-- Balloon Game -->
+        <div class="interactive-section">
+            <h2 class="section-title">🎯 Pop the Balloons!</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: #666;">Click each balloon to pop it and reveal a special message! 🎈</p>
+            <div class="balloons-container" id="balloons-container"></div>
+        </div>
+
+        <!-- Cake Section -->
+        <div class="interactive-section">
+            <h2 class="section-title">🧁 Light the Candles!</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: #666;">Click each candle to light it up! 🕯️</p>
+            <div class="cake-container">
+                <div class="cake">
+                    <div class="candles" id="candles"></div>
+                    <div class="cake-layer"></div>
+                    <div class="cake-layer" style="width: 480px;"></div>
+                    <div class="cake-layer" style="width: 540px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message for Aditya -->
+        <div class="interactive-section">
+            <h2 class="section-title">💌 Leave a Message for Aditya</h2>
+            <div class="message-wall">
+                <input type="text" class="message-input" id="sender-name" placeholder="Your Name 💝">
+                <textarea class="message-textarea" id="message-text" placeholder="Write your heartfelt message for Aditya... ✨"></textarea>
+                <button class="btn" onclick="sendMessage()">Send Message 💌</button>
+                <div class="send-status" id="send-status"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Made with 💙 and a little bit of chaos by Aditya for his best friend Prachi — Happy 18th!</p>
+        </footer>
+    </div>
+
+    <!-- Easter Egg -->
+    <div class="easter-egg" onclick="showSecret()">💫</div>
+    
+    <div class="secret-message" id="secret-message">
+        <h2 style="font-family: 'Pacifico', cursive; color: #764ba2; margin-bottom: 20px;">A Secret Message 💌</h2>
+        <p style="font-size: 1.3rem; line-height: 1.8; color: #333;">
+            "You've made 18 look magical 💫<br><br>
+            From all our crazy adventures to the quiet moments,<br>
+            you've made every day brighter.<br>
+            Here's to growing up but never growing apart!<br><br>
+            - Aditya"
+        </p>
+        <button class="btn" onclick="closeSecret()">Close 💝</button>
+    </div>
+
+
+
+    <!-- Popup for Balloon Messages -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <h3 id="popup-title">✨</h3>
+            <p id="popup-message"></p>
+            <button class="popup-close" onclick="closePopup()">Close 💝</button>
+        </div>
+    </div>
+
+    <script>
+        // Countdown Logic
+         const targetDate = new Date('October 7, 2025 00:00:00').getTime();
+        //const targetDate = new Date().getTime()// + 5000; // 5 seconds from now
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.add('active');
+                setTimeout(celebrationMode, 500);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Celebration Mode
+        function celebrationMode() {
+            createConfetti();
+        }
+
+        // Confetti
+        let confettiInterval = null;
+        
+        function createConfetti(duration = 5000) {
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#ff8dc7'];
+            let confettiCount = 0;
+            const maxConfetti = 100;
+            
+            // Clear any existing confetti interval
+            if (confettiInterval) {
+                clearInterval(confettiInterval);
+            }
+            
+            // Create confetti at intervals
+            confettiInterval = setInterval(() => {
+                if (confettiCount >= maxConfetti) {
+                    clearInterval(confettiInterval);
+                    return;
+                }
+                
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+                
+                confettiCount++;
+            }, 30);
+            
+            // Stop creating new confetti after duration
+            setTimeout(() => {
+                if (confettiInterval) {
+                    clearInterval(confettiInterval);
+                }
+            }, duration);
+        }
+
+        // Popup functions
+        function showPopup(title, message) {
+            document.getElementById('popup-title').innerText = title;
+            document.getElementById('popup-message').innerText = message;
+            document.getElementById('popup').classList.add('active');
+        }
+
+        function closePopup() {
+            document.getElementById('popup').classList.remove('active');
+        }
+
+        // Balloons
+        const balloonMessages = [
+            "You're amazing! 🌟",
+            "Keep shining! ✨",
+            "You're one in a million! 💎",
+            "Stay awesome! 🎨",
+            "Never stop smiling! 😊"
+        ];
+
+        function createBalloons() {
+            const container = document.getElementById('balloons-container');
+            balloonMessages.forEach((msg, index) => {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.onclick = () => popBalloon(balloon, msg);
+                container.appendChild(balloon);
+            });
+        }
+
+        function popBalloon(balloon, message) {
+            balloon.style.transform = 'scale(0)';
+            balloon.style.transition = 'transform 0.3s ease';
+            setTimeout(() => {
+                showPopup('🎈 You popped a balloon!', message);
+                balloon.remove();
+            }, 300);
+        }
+
+        // Candles
+        let litCandles = 0;
+        const totalCandles = 18;
+
+        function createCandles() {
+            const container = document.getElementById('candles');
+            for (let i = 0; i < totalCandles; i++) {
+                const candle = document.createElement('div');
+                candle.className = 'candle';
+                candle.innerHTML = '<div class="flame"></div>';
+                candle.onclick = () => {
+                    if (!candle.classList.contains('lit')) {
+                        candle.classList.add('lit');
+                        litCandles++;
+                        
+                        // Check if all candles are lit
+                        if (litCandles === totalCandles) {
+                            setTimeout(() => {
+                                showPopup('🎂 All Candles Lit!', 'Make a wish, Prachi! 🌟✨');
+                                createConfetti();
+                            }, 500);
+                        }
+                    }
+                };
+                container.appendChild(candle);
+            }
+        }
+
+        // Send Message to Aditya via Email
+        async function sendMessage() {
+            const name = document.getElementById('sender-name').value.trim();
+            const message = document.getElementById('message-text').value.trim();
+            const statusDiv = document.getElementById('send-status');
+            
+            if (!name || !message) {
+                statusDiv.className = 'send-status error';
+                statusDiv.innerText = '⚠️ Please fill in both your name and message!';
+                return;
+            }
+
+            // Show sending status
+            statusDiv.className = 'send-status';
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = 'linear-gradient(135deg, #a8d8ea 0%, #84c9fb 100%)';
+            statusDiv.style.color = '#004085';
+            statusDiv.innerText = '📤 Sending your message...';
+
+            try {
+                // Using Formspree for email forwarding
+                const response = await fetch('https://formspree.io/f/xvgwqnpd', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        message: message,
+                        _replyto: 'adityaprasadsahu2017@gmail.com',
+                        _subject: `Birthday Message from ${name} for Prachi's Website`
+                    })
+                });
+
+                if (response.ok) {
+                    statusDiv.className = 'send-status success';
+                    statusDiv.innerText = '✅ Message sent successfully! Aditya will read it soon! 💌';
+                    document.getElementById('sender-name').value = '';
+                    document.getElementById('message-text').value = '';
+                    
+                    setTimeout(() => {
+                        showPopup('💝 Message Delivered!', 'Your message has been sent to Aditya successfully!');
+                    }, 1000);
+                } else {
+                    throw new Error('Failed to send');
+                }
+            } catch (error) {
+                statusDiv.className = 'send-status error';
+                statusDiv.innerText = '❌ Oops! Something went wrong. Please try again or email directly to adityaprasadsahu2017@gmail.com';
+            }
+        }
+
+        // Easter Egg
+        function showSecret() {
+            document.getElementById('secret-message').classList.add('active');
+            createConfetti();
+        }
+
+        function closeSecret() {
+            document.getElementById('secret-message').classList.remove('active');
+        }
+
+        // Initialize
+        createBalloons();
+        createCandles();
+
+        // Enter key for message
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageText = document.getElementById('message-text');
+            if (messageText) {
+                messageText.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
